@@ -1,10 +1,9 @@
-import "./globals.css";
 import { Inter } from "next/font/google";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Meme Gallery",
+  title: "Meme Gallery | Profile",
   description: "A fully responsive gallery for all your memes.",
 };
 
