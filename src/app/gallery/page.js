@@ -1,6 +1,15 @@
+"use client";
 import Link from "next/link";
+import { useState } from "react";
+
+function handleChange(event) {
+  const { value } = event.target;
+  setSearchValue(value);
+}
 
 export default function Gallery() {
+  const [searchValue, setSearchValue] = useState("");
+
   return (
     <main className="mt-10 flex justify-center items-center">
       <div>
@@ -13,6 +22,12 @@ export default function Gallery() {
             <Link href="/" className="my-auto">
               Back to Homepage
             </Link>
+          </div>
+          <div className="px-4 mt-5 relative">
+            <input
+              className="bg-transparent w-full py-2 border-2 border-white rounded-lg pl-3 focus:outline-none font-medium"
+              onChange={handleChange}
+            />
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 place-items-center mb-5">
             <button className="mt-7 w-[90%] h-[320px] rounded-lg border-2 border-white text-center hover:bg-white/25">
