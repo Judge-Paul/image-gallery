@@ -37,7 +37,7 @@ export default function Login() {
         toast.error(error);
       } else {
         toast.success("Login successful!");
-        router.push("/dashboard");
+        router.push("/gallery");
       }
     }
   };

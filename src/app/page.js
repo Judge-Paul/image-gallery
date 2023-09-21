@@ -4,9 +4,9 @@ export default function Home() {
   return (
     <main className="min-h-screen flex justify-center items-center">
       <div className="text-center">
-        <h1 className="font-bold text-5xl">Meme Gallery</h1>
+        <h1 className="font-bold text-5xl">Image Gallery</h1>
         <p className="font-semibold text-lg mt-4 mb-7">
-          Store all your favorite memes in one place.
+          Store all your favorite Images in one place.
         </p>
         <Link
           href="/gallery"
@@ -15,7 +15,6 @@ export default function Home() {
           Get Started {"->"}
         </Link>
       </div>
-      <div></div>
     </main>
   );
 }
