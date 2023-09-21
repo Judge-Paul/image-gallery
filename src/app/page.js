@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <main className="h-screen flex justify-center items-center">
+    <main className="min-h-screen flex justify-center items-center">
       <div className="text-center">
         <h1 className="font-bold text-5xl">Meme Gallery</h1>
         <p className="font-semibold text-lg mt-4 mb-7">
