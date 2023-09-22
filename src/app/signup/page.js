@@ -5,8 +5,10 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AiFillLeftCircle } from "react-icons/ai";
 import Link from "next/link";
+import { BiLoader } from "react-icons/bi";
 
 export default function Signup() {
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
@@ -23,6 +25,7 @@ export default function Signup() {
   };
 
   const handleSignup = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
 
     function isValidEmail(email) {
@@ -49,9 +52,11 @@ export default function Signup() {
 
       if (error) {
         toast.error(error);
+        setIsLoading(false);
       } else {
         toast.success("Account created successfully!");
         router.push("/gallery");
+        setIsLoading(false);
       }
     }
   };
@@ -114,9 +119,11 @@ export default function Signup() {
           </div>
           <button
             type="submit"
+            disabled={isLoading}
             className="mt-3 bg-white text-black text-md font-bold rounded-md py-2 px-20 hover:bg-gray-200"
           >
             Sign Up
+            <BiLoader />
           </button>
           <Link
             href="/login"
