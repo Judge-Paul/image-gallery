@@ -1,6 +1,6 @@
 export default function Card({ img, title }) {
   return (
-    <div className="mt-7 mx-4 md:mx-0 w-full sm:w-[90%] sm:h-80 rounded-lg border-2 border-white text-center flex flex-col">
+    <div className="mt-7 mx-4 md:mx-0 w-[90%] sm:h-80 rounded-lg border-2 border-white text-center flex flex-col">
       <div className="flex-grow">
         <img
           src={img}
