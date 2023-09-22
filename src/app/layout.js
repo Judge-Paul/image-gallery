@@ -6,8 +6,8 @@ import { AuthContextProvider } from "@/context/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
-  title: "Meme Gallery",
-  description: "A fully responsive gallery for all your memes.",
+  title: "Image Gallery",
+  description: "A fully responsive image gallery for all your images.",
 };
 
 export default function RootLayout({ children }) {

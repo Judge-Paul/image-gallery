@@ -22,13 +22,15 @@ export default function Gallery() {
   const router = useRouter();
 
   useEffect(() => {
-    if (user == null) router.push("/signup");
+    if (user == null) router.push("/login");
   }, [user]);
+
+  console.log(filteredImages);
 
   function handleImageSelect(event) {
     setFile(event.target.files[0]);
     setSelectedImage({
-      id: Date.now(),
+      id: Date.now().toString(),
       url: URL.createObjectURL(event.target.files[0]),
       title: event.target.files[0]?.name.split(".")[0], //To remove the file extension name
     });
@@ -92,16 +94,16 @@ export default function Gallery() {
     <main className="mt-10 flex justify-center items-center">
       <div>
         <h1 className="font-semibold text-xl text-center">
-          Welcome to your Meme Gallery
+          Welcome to your Image Gallery
         </h1>
         <div className="mx-8 sm:px-4 md:px-10 py-7 sm:w-[600px] md:w-[700px] lg:w-[1000px] xl:w-[1150px] mt-7 mb-5 border border-white rounded-lg">
           <div className="px-4 flex justify-between">
-            <h4 className="text-xl md:text-2xl font-semibold">Meme Gallery</h4>
+            <h4 className="text-xl md:text-2xl font-semibold">Image Gallery</h4>
             <Link
               href="/"
               className="flex text-sm md:text-md my-auto hover:text-gray-200"
             >
-              {"<-"} Back <span className="hidden md:flex">to Homepage</span>
+              {"<-"}Back{" "}
             </Link>
           </div>
           <div className="px-4 mt-5 flex relative w-full">
@@ -116,14 +118,10 @@ export default function Gallery() {
           </div>
           {images.length > 0 && (
             <>
-              <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId="gallery">
+              <DragDropContext>
+                {/* <Droppable droppableId="gallery">
                   {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      {...provided.droppableProps}
-                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 place-items-center mb-5"
-                    >
+                    <div ref={provided.innerRef} {...provided.droppableProps} c>
                       <label className="w-[90%]">
                         <input
                           type="file"
@@ -191,7 +189,35 @@ export default function Gallery() {
                       </label>
                       {filteredImages.map((image, index) => (
                         <Draggable
-                          key={image.id} // You should assign a unique ID to each image
+                          key={image.id}
+                          draggableId={image.id}
+                          index={index}
+                        >
+                          {(provided) => (
+                            <div
+                              ref={provided.innerRef}
+                              {...provided.draggableProps}
+                              {...provided.dragHandleProps}
+                            >
+                              <Card img={image.url} title={image.title} />
+                            </div>
+                          )}
+                        </Draggable>
+                      ))}
+                      {provided.placeholder}
+                    </div>
+                  )}
+                </Droppable> */}
+                <Droppable droppableId="gallery">
+                  {(provided) => (
+                    <div
+                      ref={provided.innerRef}
+                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 place-items-center mb-5"
+                      {...provided.droppableProps}
+                    >
+                      {filteredImages.map((image, index) => (
+                        <Draggable
+                          key={image.id}
                           draggableId={image.id}
                           index={index}
                         >

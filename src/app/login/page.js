@@ -96,7 +96,7 @@ export default function Login() {
             href="/signup"
             className="mt-5 block text-sm font-medium hover:text-gray-100"
           >
-            Don't have an account? Sign Up
+            Don&apos;t have an account? Sign Up
           </Link>
         </form>
       </div>
