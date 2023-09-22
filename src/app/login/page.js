@@ -86,7 +86,7 @@ export default function Login() {
               id="password"
               name="password"
               className="mt-3 border border-white rounded-md px-3 py-2 w-full bg-transparent text-white focus:outline-none focus:ring focus:border-blue-300"
-              placeholder="Password"
+              placeholder="1Password"
               value={formData.password}
               onChange={handleInputChange}
             />
