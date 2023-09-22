@@ -27,13 +27,13 @@ export default function Gallery() {
     axios
       .get("https://api.unsplash.com/photos/random?count=12", {
         headers: {
-          Authorization: UNSPLASH_ACCESS_KEY,
+          Authorization: `Client-ID ${UNSPLASH_ACCESS_KEY}`,
         },
       })
       .then((response) => {
         const fetchedImages = response.data.map((image) => ({
           id: image.id,
-          url: image.urls.regular,
+          url: image.urls.full,
           title: image.alt_description || "Untitled",
         }));
         setImages(fetchedImages);
@@ -45,7 +45,6 @@ export default function Gallery() {
       });
   }, []);
 
-  console.log(isLoading);
   const handleDragEnd = (result) => {
     if (!result.destination) {
       return;

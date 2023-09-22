@@ -5,7 +5,7 @@ export default function Card({ img, title }) {
         src={img}
         alt={title + "Image"}
         height="320px"
-        className="rounded-t-lg w-full"
+        className="h-[280px] rounded-t-lg w-full"
       />
       <h4 className="font-semibold line-clamp-2 my-2">{title}</h4>
     </div>
