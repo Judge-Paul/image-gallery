@@ -37,7 +37,7 @@ export default function Login() {
       const { result, error } = await signIn(formData.email, formData.password);
 
       if (error) {
-        toast.error(error);
+        toast.error(error.message);
         setIsLoading(false);
       } else {
         toast.success("Login successful!");
