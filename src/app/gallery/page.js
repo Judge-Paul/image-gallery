@@ -123,7 +123,6 @@ export default function Gallery() {
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                             >
-                              <LoadingSkeleton height={320} width="90%" />
                               <Card img={image.url} title={image.title} />
                             </div>
                           )}
