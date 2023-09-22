@@ -20,7 +20,7 @@ export default function Gallery() {
   const router = useRouter();
 
   useEffect(() => {
-    if (user == null) router.push("/signup");
+    if (user == null) router.push("/login");
   }, [user]);
 
   useEffect(() => {
