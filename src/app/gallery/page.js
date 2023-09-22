@@ -1,23 +1,21 @@
 "use client";
-import Link from "next/link";
 import { useState, useEffect } from "react";
-import Card from "../components/Card";
-import { AiOutlineClose, AiOutlineCheck } from "react-icons/ai";
-import { BiLoaderAlt } from "react-icons/bi";
 import { FaSearch } from "react-icons/fa";
-import { toast } from "sonner";
-import { useAuthContext } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 import { DragDropContext, Droppable, Draggable } from "react-beautiful-dnd";
+import axios from "axios";
+import Card from "../components/Card";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { useAuthContext } from "@/context/AuthContext";
+import CardSkeleton from "../components/CardSkeleton";
 
 export default function Gallery() {
-  const [file, setFile] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [searchValue, setSearchValue] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [images, setImages] = useState([]);
   const [filteredImages, setFilteredImages] = useState([]);
+  const [searchValue, setSearchValue] = useState("");
 
+  const UNSPLASH_ACCESS_KEY = process.env.NEXT_PUBLIC_UNSPLASH_ACCESS_KEY;
   const { user } = useAuthContext();
   const router = useRouter();
 
@@ -25,49 +23,29 @@ export default function Gallery() {
     if (user == null) router.push("/signup");
   }, [user]);
 
-  console.log(filteredImages);
-
-  function handleImageSelect(event) {
-    setFile(event.target.files[0]);
-    setSelectedImage({
-      id: Date.now().toString(),
-      url: URL.createObjectURL(event.target.files[0]),
-      title: event.target.files[0]?.name.split(".")[0], //To remove the file extension name
-    });
-  }
-
-  const uploadImage = async (e) => {
-    setIsLoading(true);
-    e.preventDefault();
-    if (!file) return;
-
-    try {
-      const data = new FormData();
-      data.set("file", file);
-
-      const res = await fetch("/api/upload", {
-        method: "POST",
-        body: data,
-      });
-      const { success } = await res.json();
-      if (!success) throw new Error("Upload failed");
-      else {
-        toast.success("Image Uploaded Successfully");
-        setImages((currImages) => [...currImages, selectedImage]);
-        setSelectedImage(null);
-        setFile(null);
-      }
-    } catch (e) {
-      toast.error(e.message);
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   useEffect(() => {
-    setFilteredImages(images);
-  }, [images]);
+    axios
+      .get("https://api.unsplash.com/photos/random?count=12", {
+        headers: {
+          Authorization: UNSPLASH_ACCESS_KEY,
+        },
+      })
+      .then((response) => {
+        const fetchedImages = response.data.map((image) => ({
+          id: image.id,
+          url: image.urls.regular,
+          title: image.alt_description || "Untitled",
+        }));
+        setImages(fetchedImages);
+        setFilteredImages(fetchedImages);
+        setIsLoading(false);
+      })
+      .catch((error) => {
+        toast.error(error.message);
+      });
+  }, []);
 
+  console.log(isLoading);
   const handleDragEnd = (result) => {
     if (!result.destination) {
       return;
@@ -83,10 +61,14 @@ export default function Gallery() {
   function handleSearch(event) {
     const { value } = event.target;
     setSearchValue(value);
-    if (filteredImages.length === 0) {
-      setFilteredImages(images);
+    if (images.length === 0) {
+      setFilteredImages([]);
     } else {
-      setFilteredImages(images.filter((image) => image.title.includes(value)));
+      setFilteredImages(
+        images.filter((image) =>
+          image.title.toLowerCase().includes(value.toLowerCase()),
+        ),
+      );
     }
   }
 
@@ -99,98 +81,36 @@ export default function Gallery() {
         <div className="mx-8 sm:px-4 md:px-10 py-7 sm:w-[600px] md:w-[700px] lg:w-[1000px] xl:w-[1150px] mt-7 mb-5 border border-white rounded-lg">
           <div className="px-4 flex justify-between">
             <h4 className="text-xl md:text-2xl font-semibold">Image Gallery</h4>
-            <Link
-              href="/"
-              className="flex text-sm md:text-md my-auto hover:text-gray-200"
-            >
-              {"<-"}Back{" "}
-            </Link>
           </div>
           <div className="px-4 mt-5 flex relative w-full">
             <input
               className="bg-transparent w-full py-2 border-2 border-white rounded-lg pl-3 focus:outline-none font-medium"
+              placeholder="Search images..."
               onChange={handleSearch}
+              value={searchValue}
             />
             <FaSearch
               size="20px"
               className="absolute top-0 right-0 mr-7 mt-2.5"
             />
           </div>
-          {images.length > 0 && (
-            <>
-              <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId="droppable">
-                  {(provided) => (
-                    <div
-                      ref={provided.innerRef}
-                      className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 place-items-center mb-5"
-                      {...provided.droppableProps}
-                    >
-                      <label className="w-[90%]">
-                        <input
-                          type="file"
-                          hidden
-                          onChange={handleImageSelect}
-                        />
-                        {selectedImage ? (
-                          <div className="mt-7 w-[90%] h-[320px]">
-                            <img
-                              className="w-max-content h-72"
-                              src={selectedImage?.url}
-                              alt={selectedImage?.title}
-                            />
-                            <div className="mt-1 flex max-w-full">
-                              <input
-                                className="bg-transparent border-2 border-white focus:outline-none w-[70%]"
-                                type="text"
-                                onChange={(e) =>
-                                  setSelectedImage((imageData) => ({
-                                    ...imageData,
-                                    title: e.target.value,
-                                  }))
-                                }
-                                value={selectedImage?.title}
-                              />
-                              <button
-                                onClick={() => {
-                                  setSelectedImage(null);
-                                }}
-                                className="w-[15%] bg-red-500 hover:bg-red-400 text-white"
-                              >
-                                <AiOutlineClose
-                                  size="30px"
-                                  className="mx-auto"
-                                />
-                              </button>
-                              <button
-                                onClick={uploadImage}
-                                className="w-[15%] bg-green-500 hover:bg-green-400 text-white"
-                              >
-                                {isLoading ? (
-                                  <BiLoaderAlt
-                                    size="25px"
-                                    className="animate-spin mx-auto"
-                                  />
-                                ) : (
-                                  <AiOutlineCheck
-                                    size="30px"
-                                    className="mx-auto"
-                                  />
-                                )}
-                              </button>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="mt-7 flex items-center justify-center h-[320px] rounded-lg border-2 border-white text-center hover:bg-white/25">
-                            <div>
-                              <h4 className="text-3xl font-semibold ">
-                                Add More
-                              </h4>
-                              <p className="text-6xl font-bold">+</p>
-                            </div>
-                          </div>
-                        )}
-                      </label>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Droppable droppableId="droppable">
+              {(provided) => (
+                <div
+                  ref={provided.innerRef}
+                  className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 place-items-center mb-5"
+                  {...provided.droppableProps}
+                >
+                  {isLoading ? (
+                    <>
+                      <CardSkeleton />
+                      <CardSkeleton />
+                      <CardSkeleton />
+                      <CardSkeleton />
+                    </>
+                  ) : (
+                    <>
                       {filteredImages.map((image, index) => (
                         <Draggable
                           key={image.id}
@@ -203,75 +123,19 @@ export default function Gallery() {
                               {...provided.draggableProps}
                               {...provided.dragHandleProps}
                             >
+                              <LoadingSkeleton height={320} width="90%" />
                               <Card img={image.url} title={image.title} />
                             </div>
                           )}
                         </Draggable>
                       ))}
-                      {provided.placeholder}
-                    </div>
+                    </>
                   )}
-                </Droppable>
-              </DragDropContext>
-            </>
-          )}
-          {images.length === 0 && (
-            <div className="md:mt-5 py-16 w-full flex items-center justify-center text-center">
-              <label>
-                <input type="file" hidden onChange={handleImageSelect} />
-                <div className="w-80 aspect-video rounded flex items-center justify-center cursor-pointer">
-                  {selectedImage ? (
-                    <div className="w-80 h-80 block">
-                      <img
-                        width="w-80 h-72"
-                        src={selectedImage?.url}
-                        alt={selectedImage?.title}
-                      />
-                      <div className="mt-1 flex max-w-full">
-                        <input
-                          className="bg-transparent border-2 border-white focus:outline-none w-[70%]"
-                          type="text"
-                          onChange={(e) =>
-                            setSelectedImage((imageData) => ({
-                              ...imageData,
-                              title: e.target.value,
-                            }))
-                          }
-                          value={selectedImage?.title}
-                        />
-                        <button
-                          onClick={() => {
-                            setSelectedImage(null);
-                          }}
-                          className="w-[15%] bg-red-500 hover:bg-red-400 text-white"
-                        >
-                          <AiOutlineClose size="30px" className="mx-auto" />
-                        </button>
-                        <button
-                          onClick={uploadImage}
-                          className="w-[15%] bg-green-500 hover:bg-green-400 text-white"
-                        >
-                          {isLoading ? (
-                            <BiLoaderAlt
-                              size="25px"
-                              className="animate-spin mx-auto"
-                            />
-                          ) : (
-                            <AiOutlineCheck size="30px" className="mx-auto" />
-                          )}
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <span className="h-80 flex flex-col justify-center border-2 border-dashed items-center">
-                      <p>No Images Added</p>
-                      <p>Click here to add</p>
-                    </span>
-                  )}
+                  {provided.placeholder}
                 </div>
-              </label>
-            </div>
-          )}
+              )}
+            </Droppable>
+          </DragDropContext>
         </div>
       </div>
     </main>
