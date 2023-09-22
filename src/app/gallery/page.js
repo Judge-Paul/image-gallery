@@ -119,7 +119,7 @@ export default function Gallery() {
           {images.length > 0 && (
             <>
               <DragDropContext onDragEnd={handleDragEnd}>
-                <Droppable droppableId="dropabble">
+                <Droppable droppableId="droppable">
                   {(provided) => (
                     <div
                       ref={provided.innerRef}

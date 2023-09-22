@@ -97,7 +97,7 @@ export default function Login() {
             className="flex selection:mt-3 bg-white text-black font-semibold rounded-md py-2 px-14 hover:bg-gray-200"
           >
             Log In
-            {isLoading && <BiLoader className="animate-spin" />}
+            {isLoading && <BiLoader className="ml-2 my-auto animate-spin" />}
           </button>
           <Link
             href="/signup"

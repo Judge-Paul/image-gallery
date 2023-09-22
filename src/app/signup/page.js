@@ -120,10 +120,10 @@ export default function Signup() {
           <button
             type="submit"
             disabled={isLoading}
-            className="mt-3 bg-white text-black text-md font-bold rounded-md py-2 px-20 hover:bg-gray-200"
+            className="flex mt-3 bg-white text-black text-md font-bold rounded-md py-2 px-20 hover:bg-gray-200"
           >
             Sign Up
-            {isLoading && <BiLoader className="animate-spin" />}
+            {isLoading && <BiLoader className="ml-2 my-auto animate-spin" />}
           </button>
           <Link
             href="/login"
