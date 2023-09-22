@@ -118,8 +118,8 @@ export default function Gallery() {
           </div>
           {images.length > 0 && (
             <>
-              <DragDropContext>
-                {/* <Droppable droppableId="gallery">
+              <DragDropContext onDragEnd={handleDragEnd}>
+                {/* <Droppable droppableId="droppable">
                   {(provided) => (
                     <div ref={provided.innerRef} {...provided.droppableProps} c>
                       <label className="w-[90%]">
@@ -215,6 +215,71 @@ export default function Gallery() {
                       className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-4 place-items-center mb-5"
                       {...provided.droppableProps}
                     >
+                      <label className="w-[90%]">
+                        <input
+                          type="file"
+                          hidden
+                          onChange={handleImageSelect}
+                        />
+                        {selectedImage ? (
+                          <div className="mt-7 w-[90%] h-[320px]">
+                            <img
+                              className="w-max-content h-72"
+                              src={selectedImage?.url}
+                              alt={selectedImage?.title}
+                            />
+                            <div className="mt-1 flex max-w-full">
+                              <input
+                                className="bg-transparent border-2 border-white focus:outline-none w-[70%]"
+                                type="text"
+                                onChange={(e) =>
+                                  setSelectedImage((imageData) => ({
+                                    ...imageData,
+                                    title: e.target.value,
+                                  }))
+                                }
+                                value={selectedImage?.title}
+                              />
+                              <button
+                                onClick={() => {
+                                  setSelectedImage(null);
+                                }}
+                                className="w-[15%] bg-red-500 hover:bg-red-400 text-white"
+                              >
+                                <AiOutlineClose
+                                  size="30px"
+                                  className="mx-auto"
+                                />
+                              </button>
+                              <button
+                                onClick={uploadImage}
+                                className="w-[15%] bg-green-500 hover:bg-green-400 text-white"
+                              >
+                                {isLoading ? (
+                                  <BiLoaderAlt
+                                    size="25px"
+                                    className="animate-spin mx-auto"
+                                  />
+                                ) : (
+                                  <AiOutlineCheck
+                                    size="30px"
+                                    className="mx-auto"
+                                  />
+                                )}
+                              </button>
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="mt-7 flex items-center justify-center h-[320px] rounded-lg border-2 border-white text-center hover:bg-white/25">
+                            <div>
+                              <h4 className="text-3xl font-semibold ">
+                                Add More
+                              </h4>
+                              <p className="text-6xl font-bold">+</p>
+                            </div>
+                          </div>
+                        )}
+                      </label>
                       {filteredImages.map((image, index) => (
                         <Draggable
                           key={image.id}
