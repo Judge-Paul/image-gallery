@@ -51,7 +51,7 @@ export default function Signup() {
       );
 
       if (error) {
-        toast.error(error);
+        toast.error(error.message);
         setIsLoading(false);
       } else {
         toast.success("Account created successfully!");
