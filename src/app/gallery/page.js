@@ -265,8 +265,7 @@ export default function Gallery() {
                   ) : (
                     <span className="h-80 flex flex-col justify-center border-2 border-dashed items-center">
                       <p>No Images Added</p>
-                      <p>Click here to add or</p>
-                      <p>Drag and drop the image here</p>
+                      <p>Click here to add</p>
                     </span>
                   )}
                 </div>
