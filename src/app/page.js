@@ -9,7 +9,7 @@ export default function Home() {
           Store all your favorite Images in one place.
         </p>
         <Link
-          href="/gallery"
+          href="/login"
           className="border border-white px-20 py-4 text-lg font-bold hover:bg-white hover:text-black rounded-xl"
         >
           Get Started {"->"}
