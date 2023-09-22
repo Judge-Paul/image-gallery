@@ -5,8 +5,10 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { AiFillLeftCircle } from "react-icons/ai";
 import Link from "next/link";
+import { BiLoader } from "react-icons/bi";
 
 export default function Login() {
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,6 +24,7 @@ export default function Login() {
   };
 
   const handleLogin = async (e) => {
+    setIsLoading(true);
     e.preventDefault();
 
     if (!formData.email) {
@@ -35,9 +38,11 @@ export default function Login() {
 
       if (error) {
         toast.error(error);
+        setIsLoading(false);
       } else {
         toast.success("Login successful!");
         router.push("/gallery");
+        setIsLoading(false);
       }
     }
   };
@@ -87,10 +92,12 @@ export default function Login() {
             />
           </div>
           <button
+            disabled={isLoading}
             type="submit"
-            className="mt-3 bg-white text-black font-semibold rounded-md py-2 px-14 hover:bg-gray-200"
+            className="flex selection:mt-3 bg-white text-black font-semibold rounded-md py-2 px-14 hover:bg-gray-200"
           >
             Log In
+            {isLoading && <BiLoader className="animate-spin" />}
           </button>
           <Link
             href="/signup"
